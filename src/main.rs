@@ -1,3 +1,12 @@
+#[derive(Debug)]
+struct Task {
+    name: String,
+}
+
 fn main() {
-    println!("Hello, world!");
+    let task = Task {
+        name: "first task".to_string(),
+    };
+
+    println!("{:?}", task);
 }
