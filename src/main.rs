@@ -13,5 +13,10 @@ fn main() {
 
     let cli = Cli { name: name };
 
-    println!("{:?}", cli);
+    run(cli);
+}
+
+fn run(cli: Cli) {
+    let task = Task { name: cli.name };
+    println!("{:?}", task);
 }
