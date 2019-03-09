@@ -1,12 +1,17 @@
 #[derive(Debug)]
+struct Cli {
+    name: String,
+}
+
+#[derive(Debug)]
 struct Task {
     name: String,
 }
 
 fn main() {
-    let task = Task {
-        name: "first task".to_string(),
-    };
+    let name = std::env::args().nth(1).expect("no name given");
 
-    println!("{:?}", task);
+    let cli = Cli { name: name };
+
+    println!("{:?}", cli);
 }
