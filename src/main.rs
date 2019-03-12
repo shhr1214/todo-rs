@@ -4,6 +4,7 @@ use std::fs;
 
 #[derive(Debug)]
 struct Cli {
+    command: String,
     name: String,
 }
 
@@ -19,19 +20,25 @@ struct Task {
 }
 
 fn main() -> Result<(), Error> {
-    let name = std::env::args().nth(1).expect("no name given");
+    let command = std::env::args().nth(1).expect("no command given");
+    let name = std::env::args().nth(2).expect("no name given");
 
-    let cli = Cli { name: name };
+    let cli = Cli {
+        command: command,
+        name: name,
+    };
 
     run(cli)?;
     Ok(())
 }
 
-fn run(_: Cli) -> Result<(), Error> {
-    let tasks = read_tasklist("./test/sample.json".to_string())?;
-    // let task = Task { name: cli.name };
-
-    show_tasklist(&tasks);
+fn run(cli: Cli) -> Result<(), Error> {
+    if cli.command == "list".to_string() {
+        let tasks = read_tasklist("./test/sample.json".to_string())?;
+        show_tasklist(&tasks);
+    } else if cli.command == "add".to_string() {
+        // let task = Task { name: cli.name };
+    }
     Ok(())
 }
 
