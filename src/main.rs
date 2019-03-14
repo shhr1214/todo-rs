@@ -67,6 +67,7 @@ fn save_tasklist(filename: &str, tasklist: &TaskList) -> Result<(), Error> {
 }
 
 fn show_tasklist(tasklist: &TaskList) {
+    println!("size: {}", tasklist.size);
     for ref task in &tasklist.tasks {
         show_task(task);
     }
