@@ -1,6 +1,7 @@
 use failure::Error;
 use serde::{Deserialize, Serialize};
 use std::fs;
+use std::io::{BufWriter, Write};
 
 #[derive(Debug)]
 struct Cli {
@@ -14,7 +15,13 @@ struct TaskList {
     tasks: Vec<Task>,
 }
 
-#[derive(Debug, Deserialize, Serialize)]
+impl TaskList {
+    fn add(&mut self, task: Task) {
+        self.tasks.push(task)
+    }
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
 struct Task {
     name: String,
 }
@@ -33,19 +40,31 @@ fn main() -> Result<(), Error> {
 }
 
 fn run(cli: Cli) -> Result<(), Error> {
+    let filename = "./test/sample.json";
+    let mut tasks = read_tasklist(filename)?;
     if cli.command == "list".to_string() {
-        let tasks = read_tasklist("./test/sample.json".to_string())?;
         show_tasklist(&tasks);
     } else if cli.command == "add".to_string() {
-        // let task = Task { name: cli.name };
+        let task = Task { name: cli.name };
+        tasks.add(task);
+        save_tasklist(filename, &tasks)?;
     }
     Ok(())
 }
 
-fn read_tasklist(filename: String) -> Result<TaskList, Error> {
+fn read_tasklist(filename: &str) -> Result<Box<TaskList>, Error> {
     let contents = fs::read_to_string(filename)?;
     let list = serde_json::from_str(&contents)?;
     Ok(list)
+}
+
+fn save_tasklist(filename: &str, tasklist: &TaskList) -> Result<(), Error> {
+    let mut f = BufWriter::new(fs::File::create(filename)?);
+    for task in tasklist.tasks.iter() {
+        let t = serde_json::to_string(&task)?;
+        f.write(t.as_bytes())?;
+    }
+    Ok(())
 }
 
 fn show_tasklist(tasklist: &TaskList) {
