@@ -60,10 +60,8 @@ fn read_tasklist(filename: &str) -> Result<Box<TaskList>, Error> {
 
 fn save_tasklist(filename: &str, tasklist: &TaskList) -> Result<(), Error> {
     let mut f = BufWriter::new(fs::File::create(filename)?);
-    for task in tasklist.tasks.iter() {
-        let t = serde_json::to_string(&task)?;
-        f.write(t.as_bytes())?;
-    }
+    let json = serde_json::to_string(tasklist)?;
+    f.write(json.as_bytes())?;
     Ok(())
 }
 
