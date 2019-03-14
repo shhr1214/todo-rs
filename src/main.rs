@@ -17,7 +17,8 @@ struct TaskList {
 
 impl TaskList {
     fn add(&mut self, task: Task) {
-        self.tasks.push(task)
+        self.size = self.size + 1;
+        self.tasks.push(task);
     }
 }
 
