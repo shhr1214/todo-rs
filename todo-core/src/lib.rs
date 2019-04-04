@@ -1,3 +1,8 @@
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct Task {
+    name: String,
+}
+
 #[cfg(test)]
 mod tests {
     #[test]
