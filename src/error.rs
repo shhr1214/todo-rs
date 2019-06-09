@@ -4,6 +4,7 @@ use std::fmt;
 #[derive(Debug, Clone)]
 pub enum AppError {
     NotFound,
+    AlreadyExists(u64),
 }
 
 impl fmt::Display for AppError {

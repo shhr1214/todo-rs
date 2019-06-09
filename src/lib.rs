@@ -1,19 +1,27 @@
 mod error;
 pub use error::AppError;
 
-type Result<T> = std::result::Result<T, AppError>;
+pub type QueryResult<T> = std::result::Result<T, AppError>;
+pub type CommandResult = std::result::Result<(), AppError>;
 
 #[derive(Clone, Debug)]
 pub struct Task {
+    id: u64,
     name: String,
 }
 
+impl Task {
+    pub fn id(&self) -> u64 {
+        self.id
+    }
+}
+
 pub trait TaskRepository {
-    fn list(&self) -> Result<Vec<Task>>;
-    fn find(&self, id: u64) -> Result<Task>;
-    fn add(&self, task: Task) -> Result<()>;
-    fn update(&self, task: Task) -> Result<()>;
-    fn delete(&self, task: Task) -> Result<()>;
+    fn list(&self) -> QueryResult<Vec<Task>>;
+    fn find(&self, id: u64) -> QueryResult<&Task>;
+    fn add(&mut self, task: Task) -> CommandResult;
+    fn update(&mut self, task: Task) -> CommandResult;
+    fn delete(&mut self, task: Task) -> CommandResult;
 }
 
 #[cfg(test)]
