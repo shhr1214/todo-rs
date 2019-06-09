@@ -142,6 +142,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "todo-persistence"
+version = "0.1.0"
+dependencies = [
+ "todo-rs 0.1.0",
+]
+
+[[package]]
 name = "todo-rs"
 version = "0.1.0"
 
@@ -152,6 +159,7 @@ dependencies = [
  "failure 0.1.5 (registry+https://github.com/rust-lang/crates.io-index)",
  "serde 1.0.92 (registry+https://github.com/rust-lang/crates.io-index)",
  "serde_json 1.0.39 (registry+https://github.com/rust-lang/crates.io-index)",
+ "todo-persistence 0.1.0",
  "todo-rs 0.1.0",
 ]
 

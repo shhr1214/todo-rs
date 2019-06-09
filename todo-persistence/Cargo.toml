@@ -1,14 +1,8 @@
 [package]
-name = "todo-rs"
+name = "todo-persistence"
 version = "0.1.0"
 authors = ["shhr1214 <souhei0079@gmail.com>"]
 edition = "2018"
 
 [dependencies]
-
-
-[workspace]
-members = [
-  "todo-server",
-  "todo-persistence"
-]
+todo-rs = { version = "0.1.0", path = "../" }
