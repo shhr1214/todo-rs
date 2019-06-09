@@ -1,8 +1,15 @@
+//! # InMemory な TaskRepository の実装
+//!
+//! メモリ上にデータを保存する。persistence って名前だけど永続化しない。
+//! 主にテスト用途。
+
 use std::collections::HashMap;
 
 use todo_rs::{AppError, CommandResult, QueryResult, Task, TaskRepository};
 
+/// InMmeory な TaskRepository を実装した構造体。
 pub struct InMemoryTaskRepository {
+    /// タスクは HashMap で持つ。キーは ID (u64)。
     tasks: HashMap<u64, Task>,
 }
 
