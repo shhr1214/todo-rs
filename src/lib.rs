@@ -1,12 +1,13 @@
 mod error;
 pub use error::AppError;
 
+use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
 pub type QueryResult<T> = std::result::Result<T, AppError>;
 pub type CommandResult = std::result::Result<(), AppError>;
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Task {
     id: String,
     name: String,

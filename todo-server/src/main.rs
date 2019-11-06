@@ -1,78 +1,49 @@
-use failure::Error;
-use serde::{Deserialize, Serialize};
-use std::fs;
-use std::io::{BufWriter, Write};
+use todo_rs::Task;
 
-#[derive(Debug)]
-struct Cli {
-    command: String,
-    name: String,
+use actix_web::{web, App, Error, HttpRequest, HttpResponse, HttpServer, Responder};
+use serde::Serialize;
+
+fn index() -> impl Responder {
+    HttpResponse::Ok().body("My Todo App!")
 }
 
-#[derive(Debug, Deserialize, Serialize)]
-struct TaskList {
-    size: u64,
+fn list_tasks(_req: HttpRequest) -> impl Responder {
+    let mut tasks = Vec::new();
+
+    tasks.push(Task::new("test1".into()));
+    tasks.push(Task::new("test2".into()));
+    tasks.push(Task::new("test3".into()));
+    tasks.push(Task::new("test4".into()));
+
+    Tasks { tasks: tasks }
+}
+
+#[derive(Serialize)]
+struct Tasks {
     tasks: Vec<Task>,
 }
 
-impl TaskList {
-    fn add(&mut self, task: Task) {
-        self.size = self.size + 1;
-        self.tasks.push(task);
+impl Responder for Tasks {
+    type Error = Error;
+    type Future = Result<HttpResponse, Error>;
+
+    fn respond_to(self, _req: &HttpRequest) -> Self::Future {
+        let body = serde_json::to_string(&self)?;
+
+        Ok(HttpResponse::Ok()
+            .content_type("application/json")
+            .body(body))
     }
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
-struct Task {
-    name: String,
-}
-
-fn main() -> Result<(), Error> {
-    let command = std::env::args().nth(1).expect("no command given");
-    let name = std::env::args().nth(2).expect("no name given");
-
-    let cli = Cli {
-        command: command,
-        name: name,
-    };
-
-    run(cli)?;
-    Ok(())
-}
-
-fn run(cli: Cli) -> Result<(), Error> {
-    let filename = "./test/sample.json";
-    let mut tasks = read_tasklist(filename)?;
-    if cli.command == "list".to_string() {
-        show_tasklist(&tasks);
-    } else if cli.command == "add".to_string() {
-        let task = Task { name: cli.name };
-        tasks.add(task);
-        save_tasklist(filename, &tasks)?;
-    }
-    Ok(())
-}
-
-fn read_tasklist(filename: &str) -> Result<Box<TaskList>, Error> {
-    let contents = fs::read_to_string(filename)?;
-    let list = serde_json::from_str(&contents)?;
-    Ok(list)
-}
-
-fn save_tasklist(filename: &str, tasklist: &TaskList) -> Result<(), Error> {
-    let mut f = BufWriter::new(fs::File::create(filename)?);
-    let json = serde_json::to_string(tasklist)?;
-    f.write(json.as_bytes())?;
-    Ok(())
-}
-
-fn show_tasklist(tasklist: &TaskList) {
-    println!("size: {}", tasklist.size);
-    for ref task in &tasklist.tasks {
-        show_task(task);
-    }
-}
-
-fn show_task(task: &Task) {
-    println!("{}", task.name);
+fn main() {
+    HttpServer::new(|| {
+        App::new()
+            .route("/", web::get().to(index))
+            .route("/tasks", web::get().to(list_tasks))
+    })
+    .bind("127.0.0.1:8088")
+    .unwrap()
+    .run()
+    .unwrap();
 }
