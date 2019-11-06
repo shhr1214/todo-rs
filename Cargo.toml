@@ -5,7 +5,7 @@ authors = ["shhr1214 <souhei0079@gmail.com>"]
 edition = "2018"
 
 [dependencies]
-
+uuid = { version =  "0.8", features = ["v4"] }
 
 [workspace]
 members = [

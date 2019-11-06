@@ -1,27 +1,29 @@
 mod error;
 pub use error::AppError;
 
+use uuid::Uuid;
+
 pub type QueryResult<T> = std::result::Result<T, AppError>;
 pub type CommandResult = std::result::Result<(), AppError>;
 
 #[derive(Clone, Debug)]
 pub struct Task {
-    id: u64,
+    id: String,
     name: String,
 }
 
 impl Task {
-    pub fn id(&self) -> u64 {
-        self.id
+    pub fn new(name: String) -> Self {
+        let id = Uuid::new_v4().to_string();
+        Task { id, name }
     }
 }
 
 pub trait TaskRepository {
     fn list(&self) -> QueryResult<Vec<Task>>;
-    fn find(&self, id: u64) -> QueryResult<&Task>;
-    fn add(&mut self, task: Task) -> CommandResult;
-    fn update(&mut self, task: Task) -> CommandResult;
-    fn delete(&mut self, task: Task) -> CommandResult;
+    fn find(&self, id: String) -> QueryResult<&Task>;
+    fn save(&mut self, task: Task) -> CommandResult;
+    fn remove(&mut self, task: Task) -> CommandResult;
 }
 
 #[cfg(test)]
